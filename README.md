@@ -1,4 +1,4 @@
-# Why thepopebot?
+# Why LSDAgent?
 
 **The repository IS the agent** — Every action your agent takes is a git commit. You can see exactly what it did, when, and why. If it screws up, revert it. Want to clone your agent? Fork the repo — code, personality, scheduled jobs, full history, all of it goes with your fork.
 
