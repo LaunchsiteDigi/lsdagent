@@ -60,10 +60,12 @@ export async function register() {
   // Initialize auth database
   try {
     const { initDatabase } = await import('../lib/db/index.js');
-    initDatabase();
+    await initDatabase();
   } catch (err) {
-    if (process.env.VERCEL) {
-      console.warn('Database init skipped on Vercel:', err.message);
+    if (process.env.VERCEL && !process.env.TURSO_DATABASE_URL) {
+      console.warn('Database init skipped on Vercel (no TURSO_DATABASE_URL):', err.message);
+    } else if (process.env.VERCEL) {
+      console.warn('Database init failed on Vercel:', err.message);
     } else {
       throw err;
     }
@@ -82,7 +84,7 @@ export async function register() {
     // Warm in-memory flag from DB (covers the window before the async cron fetch completes)
     try {
       const { getAvailableVersion } = await import('../lib/db/update-check.js');
-      const stored = getAvailableVersion();
+      const stored = await getAvailableVersion();
       if (stored) setUpdateAvailable(stored);
     } catch {}
   }

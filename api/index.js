@@ -53,7 +53,7 @@ function safeCompare(a, b) {
  * @param {Request} request - The incoming request
  * @returns {Response|null} - Error response or null if authorized
  */
-function checkAuth(routePath, request) {
+async function checkAuth(routePath, request) {
   if (PUBLIC_ROUTES.includes(routePath)) return null;
 
   const apiKey = request.headers.get('x-api-key');
@@ -61,7 +61,7 @@ function checkAuth(routePath, request) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const record = verifyApiKey(apiKey);
+  const record = await verifyApiKey(apiKey);
   if (!record) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 });
   }
@@ -221,7 +221,7 @@ async function POST(request) {
   const routePath = url.pathname.replace(/^\/api/, '');
 
   // Auth check
-  const authError = checkAuth(routePath, request);
+  const authError = await checkAuth(routePath, request);
   if (authError) return authError;
 
   // Fire triggers (non-blocking)
@@ -252,7 +252,7 @@ async function GET(request) {
   const routePath = url.pathname.replace(/^\/api/, '');
 
   // Auth check
-  const authError = checkAuth(routePath, request);
+  const authError = await checkAuth(routePath, request);
   if (authError) return authError;
 
   switch (routePath) {

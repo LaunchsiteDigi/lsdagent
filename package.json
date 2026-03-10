@@ -66,6 +66,7 @@
     "@langchain/langgraph": "^1.1.4",
     "@langchain/langgraph-checkpoint-sqlite": "^1.0.1",
     "@langchain/openai": "^1.2.7",
+    "@libsql/client": "^0.17.0",
     "@tailwindcss/postcss": "^4.2.1",
     "@xterm/addon-fit": "^0.10.0",
     "@xterm/addon-search": "^0.15.0",
