@@ -35,6 +35,9 @@
   ],
   "scripts": {
     "build": "esbuild lib/chat/components/*.jsx lib/chat/components/**/*.jsx --outdir=lib/chat/components --format=esm --jsx=automatic --outbase=lib/chat/components && esbuild lib/auth/components/*.jsx lib/auth/components/**/*.jsx --outdir=lib/auth/components --format=esm --jsx=automatic --outbase=lib/auth/components && esbuild lib/code/*.jsx --outdir=lib/code --format=esm --jsx=automatic",
+    "dev": "next dev",
+    "next-build": "next build",
+    "start": "next start",
     "prepublishOnly": "npm run build",
     "postinstall": "node -e \"import('./bin/postinstall.js').catch(()=>{})\"",
     "db:generate": "drizzle-kit generate",
@@ -84,7 +87,12 @@
     "tailwind-merge": "^3.0.0",
     "uuid": "^9.0.0",
     "ws": "^8.19.0",
-    "zod": "^4.3.6"
+    "zod": "^4.3.6",
+    "next": ">=15.5.12",
+    "next-auth": "^5.0.0-beta.30",
+    "next-themes": ">=0.4.0",
+    "react": ">=19.0.0",
+    "react-dom": ">=19.0.0"
   },
   "peerDependencies": {
     "next": ">=15.5.12",
