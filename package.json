@@ -64,7 +64,6 @@
     "@langchain/core": "^1.1.24",
     "@langchain/google-genai": "^2.1.18",
     "@langchain/langgraph": "^1.1.4",
-    "@langchain/langgraph-checkpoint-sqlite": "^1.0.1",
     "@langchain/openai": "^1.2.7",
     "@libsql/client": "^0.17.0",
     "@tailwindcss/postcss": "^4.2.1",
@@ -75,7 +74,6 @@
     "@xterm/xterm": "^5.5.0",
     "ai": "^5.0.0",
     "bcrypt-ts": "^6.0.0",
-    "better-sqlite3": "^12.6.2",
     "chalk": "^5.3.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
@@ -108,6 +106,10 @@
     "next-auth": {
       "optional": false
     }
+  },
+  "optionalDependencies": {
+    "better-sqlite3": "^12.6.2",
+    "@langchain/langgraph-checkpoint-sqlite": "^1.0.1"
   },
   "devDependencies": {
     "drizzle-kit": "^0.31.9",
