@@ -1,5 +1,5 @@
-import { auth } from 'thepopebot/auth';
-import { PullRequestsPage } from 'thepopebot/chat';
+import { auth } from '../../lib/auth/index.js';
+import { PullRequestsPage } from '../../lib/chat/components/index.js';
 
 export default async function PullRequestsRoute() {
   const session = await auth();

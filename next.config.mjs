@@ -1,3 +1,3 @@
-import { withThepopebot } from 'thepopebot/config';
+import { withThepopebot } from './config/index.js';
 
 export default withThepopebot({});
