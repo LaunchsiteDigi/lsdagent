@@ -42,8 +42,8 @@ export async function register() {
     if (!process.env.AUTH_TRUST_HOST) {
       process.env.AUTH_TRUST_HOST = 'true';
     }
-    // Use /tmp for SQLite on serverless (read-only filesystem otherwise)
-    if (!process.env.DATABASE_PATH) {
+    // Use /tmp for SQLite on serverless (only if not using Turso)
+    if (!process.env.TURSO_DATABASE_URL && !process.env.DATABASE_PATH) {
       process.env.DATABASE_PATH = '/tmp/thepopebot.sqlite';
     }
   }
