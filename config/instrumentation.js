@@ -30,6 +30,24 @@ export async function register() {
     process.env.AUTH_URL = process.env.APP_URL;
   }
 
+  // Auto-configure for Vercel serverless environment
+  if (process.env.VERCEL) {
+    // Auto-generate AUTH_SECRET if not set (ephemeral per cold start, fine for demo)
+    if (!process.env.AUTH_SECRET) {
+      const { randomBytes } = await import('crypto');
+      process.env.AUTH_SECRET = randomBytes(32).toString('base64');
+      console.warn('AUTH_SECRET auto-generated (set it in Vercel env vars for persistent sessions)');
+    }
+    // Trust the Vercel HTTPS proxy
+    if (!process.env.AUTH_TRUST_HOST) {
+      process.env.AUTH_TRUST_HOST = 'true';
+    }
+    // Use /tmp for SQLite on serverless (read-only filesystem otherwise)
+    if (!process.env.DATABASE_PATH) {
+      process.env.DATABASE_PATH = '/tmp/thepopebot.sqlite';
+    }
+  }
+
   // Validate AUTH_SECRET is set (required by Auth.js for session encryption)
   if (!process.env.AUTH_SECRET) {
     console.error('\n  ERROR: AUTH_SECRET is not set in your .env file.');
