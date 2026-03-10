@@ -58,23 +58,34 @@ export async function register() {
   }
 
   // Initialize auth database
-  const { initDatabase } = await import('../lib/db/index.js');
-  initDatabase();
-
-  // Start cron scheduler
-  const { loadCrons } = await import('../lib/cron.js');
-  loadCrons();
-
-  // Start built-in crons (version check)
-  const { startBuiltinCrons, setUpdateAvailable } = await import('../lib/cron.js');
-  startBuiltinCrons();
-
-  // Warm in-memory flag from DB (covers the window before the async cron fetch completes)
   try {
-    const { getAvailableVersion } = await import('../lib/db/update-check.js');
-    const stored = getAvailableVersion();
-    if (stored) setUpdateAvailable(stored);
-  } catch {}
+    const { initDatabase } = await import('../lib/db/index.js');
+    initDatabase();
+  } catch (err) {
+    if (process.env.VERCEL) {
+      console.warn('Database init skipped on Vercel:', err.message);
+    } else {
+      throw err;
+    }
+  }
+
+  // Skip cron scheduling on Vercel (serverless functions are stateless)
+  if (!process.env.VERCEL) {
+    // Start cron scheduler
+    const { loadCrons } = await import('../lib/cron.js');
+    loadCrons();
+
+    // Start built-in crons (version check)
+    const { startBuiltinCrons, setUpdateAvailable } = await import('../lib/cron.js');
+    startBuiltinCrons();
+
+    // Warm in-memory flag from DB (covers the window before the async cron fetch completes)
+    try {
+      const { getAvailableVersion } = await import('../lib/db/update-check.js');
+      const stored = getAvailableVersion();
+      if (stored) setUpdateAvailable(stored);
+    } catch {}
+  }
 
   console.log('thepopebot initialized');
 }
