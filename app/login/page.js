@@ -10,9 +10,11 @@ export default async function LoginPage() {
   }
 
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center p-8">
-      <AsciiLogo />
-      {needsSetup ? <SetupForm /> : <LoginForm />}
-    </main>
+    <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
+      <div className="w-full max-w-sm">
+        <AsciiLogo />
+        {needsSetup ? <SetupForm /> : <LoginForm />}
+      </div>
+    </div>
   );
 }
