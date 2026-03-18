@@ -30,6 +30,24 @@ export async function register() {
     process.env.AUTH_URL = process.env.APP_URL;
   }
 
+  // Auto-configure for Vercel serverless environment
+  if (process.env.VERCEL) {
+    // Auto-generate AUTH_SECRET if not set (ephemeral per cold start, fine for demo)
+    if (!process.env.AUTH_SECRET) {
+      const { randomBytes } = await import('crypto');
+      process.env.AUTH_SECRET = randomBytes(32).toString('base64');
+      console.warn('AUTH_SECRET auto-generated (set it in Vercel env vars for persistent sessions)');
+    }
+    // Trust the Vercel HTTPS proxy
+    if (!process.env.AUTH_TRUST_HOST) {
+      process.env.AUTH_TRUST_HOST = 'true';
+    }
+    // Use /tmp for SQLite on serverless (only if not using Turso)
+    if (!process.env.TURSO_DATABASE_URL && !process.env.DATABASE_PATH) {
+      process.env.DATABASE_PATH = '/tmp/thepopebot.sqlite';
+    }
+  }
+
   // Validate AUTH_SECRET is set (required by Auth.js for session encryption)
   if (!process.env.AUTH_SECRET) {
     console.error('\n  ERROR: AUTH_SECRET is not set in your .env file.');
@@ -40,23 +58,36 @@ export async function register() {
   }
 
   // Initialize auth database
-  const { initDatabase } = await import('../lib/db/index.js');
-  initDatabase();
-
-  // Start cron scheduler
-  const { loadCrons } = await import('../lib/cron.js');
-  loadCrons();
-
-  // Start built-in crons (version check)
-  const { startBuiltinCrons, setUpdateAvailable } = await import('../lib/cron.js');
-  startBuiltinCrons();
-
-  // Warm in-memory flag from DB (covers the window before the async cron fetch completes)
   try {
-    const { getAvailableVersion } = await import('../lib/db/update-check.js');
-    const stored = getAvailableVersion();
-    if (stored) setUpdateAvailable(stored);
-  } catch {}
+    const { initDatabase } = await import('../lib/db/index.js');
+    await initDatabase();
+  } catch (err) {
+    if (process.env.VERCEL && !process.env.TURSO_DATABASE_URL) {
+      console.warn('Database init skipped on Vercel (no TURSO_DATABASE_URL):', err.message);
+    } else if (process.env.VERCEL) {
+      console.warn('Database init failed on Vercel:', err.message);
+    } else {
+      throw err;
+    }
+  }
+
+  // Skip cron scheduling on Vercel (serverless functions are stateless)
+  if (!process.env.VERCEL) {
+    // Start cron scheduler
+    const { loadCrons } = await import('../lib/cron.js');
+    loadCrons();
+
+    // Start built-in crons (version check)
+    const { startBuiltinCrons, setUpdateAvailable } = await import('../lib/cron.js');
+    startBuiltinCrons();
+
+    // Warm in-memory flag from DB (covers the window before the async cron fetch completes)
+    try {
+      const { getAvailableVersion } = await import('../lib/db/update-check.js');
+      const stored = await getAvailableVersion();
+      if (stored) setUpdateAvailable(stored);
+    } catch {}
+  }
 
   console.log('thepopebot initialized');
 }

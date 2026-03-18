@@ -20,10 +20,16 @@ export function withThepopebot(nextConfig = {}) {
     env: {
       ...nextConfig.env,
       NEXT_PUBLIC_CODE_WORKSPACE: process.env.CLAUDE_CODE_OAUTH_TOKEN && process.env.BETA ? 'true' : '',
+      // Inline AUTH_SECRET/AUTH_TRUST_HOST into the bundle so Edge + Node.js runtimes
+      // both have access (Vercel auto-gen sets these in process.env at build time)
+      ...(process.env.AUTH_SECRET && { AUTH_SECRET: process.env.AUTH_SECRET }),
+      ...(process.env.AUTH_TRUST_HOST && { AUTH_TRUST_HOST: process.env.AUTH_TRUST_HOST }),
+      ...(process.env.DATABASE_PATH && { DATABASE_PATH: process.env.DATABASE_PATH }),
     },
     serverExternalPackages: [
       ...(nextConfig.serverExternalPackages || []),
       'better-sqlite3',
+      '@langchain/langgraph-checkpoint-sqlite',
       'drizzle-orm',
     ],
   };

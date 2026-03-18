@@ -35,6 +35,9 @@
   ],
   "scripts": {
     "build": "esbuild lib/chat/components/*.jsx lib/chat/components/**/*.jsx --outdir=lib/chat/components --format=esm --jsx=automatic --outbase=lib/chat/components && esbuild lib/auth/components/*.jsx lib/auth/components/**/*.jsx --outdir=lib/auth/components --format=esm --jsx=automatic --outbase=lib/auth/components && esbuild lib/code/*.jsx --outdir=lib/code --format=esm --jsx=automatic",
+    "dev": "next dev",
+    "next-build": "next build",
+    "start": "next start",
     "prepublishOnly": "npm run build",
     "postinstall": "node -e \"import('./bin/postinstall.js').catch(()=>{})\"",
     "db:generate": "drizzle-kit generate",
@@ -61,8 +64,9 @@
     "@langchain/core": "^1.1.24",
     "@langchain/google-genai": "^2.1.18",
     "@langchain/langgraph": "^1.1.4",
-    "@langchain/langgraph-checkpoint-sqlite": "^1.0.1",
     "@langchain/openai": "^1.2.7",
+    "@libsql/client": "^0.17.0",
+    "@tailwindcss/postcss": "^4.2.1",
     "@xterm/addon-fit": "^0.10.0",
     "@xterm/addon-search": "^0.15.0",
     "@xterm/addon-serialize": "^0.13.0",
@@ -70,7 +74,6 @@
     "@xterm/xterm": "^5.5.0",
     "ai": "^5.0.0",
     "bcrypt-ts": "^6.0.0",
-    "better-sqlite3": "^12.6.2",
     "chalk": "^5.3.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
@@ -78,10 +81,16 @@
     "drizzle-orm": "^0.44.0",
     "grammy": "^1.39.3",
     "lucide-react": "^0.400.0",
+    "next": ">=15.5.12",
+    "next-auth": "^5.0.0-beta.30",
+    "next-themes": ">=0.4.0",
     "node-cron": "^3.0.3",
     "open": "^10.0.0",
+    "react": ">=19.0.0",
+    "react-dom": ">=19.0.0",
     "streamdown": "^2.2.0",
     "tailwind-merge": "^3.0.0",
+    "tailwindcss": "^4.2.1",
     "uuid": "^9.0.0",
     "ws": "^8.19.0",
     "zod": "^4.3.6"
@@ -97,6 +106,10 @@
     "next-auth": {
       "optional": false
     }
+  },
+  "optionalDependencies": {
+    "better-sqlite3": "^12.6.2",
+    "@langchain/langgraph-checkpoint-sqlite": "^1.0.1"
   },
   "devDependencies": {
     "drizzle-kit": "^0.31.9",
